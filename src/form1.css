@@ -1,0 +1,34 @@
+.custom-form {
+  padding: 24px;
+  margin-bottom: 0px;
+}
+
+.custom-input {
+  width: 60%;
+  border-radius: 0;
+  margin-left: 70px;
+}
+
+.custom-date-picker {
+  width: 75%;
+  border-radius: 0;
+  margin-left: 13px;
+}
+
+.custom-select {
+  border-radius: 0;
+}
+
+.custom-button {
+  margin-right: 8px;
+  border-radius: 0;
+  float: right;
+}
+
+.Select.Option {
+  border-radius: 0;
+}
+
+.ant-row {
+  margin-bottom: 16px;
+}
