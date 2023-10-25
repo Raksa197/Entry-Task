@@ -1,5 +1,14 @@
-import { Form, Input, Button, Select, DatePicker, Row, Col, message } from "antd";
-import "./form1.css";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  DatePicker,
+  Row,
+  Col,
+  message,
+} from "antd";
+import "./MyForm.css";
 
 const { RangePicker } = DatePicker;
 

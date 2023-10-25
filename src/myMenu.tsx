@@ -9,7 +9,7 @@ function getItem(
   key: React.Key,
   icon?: React.ReactNode,
   children?: MenuItem[],
-  type?: "group"
+  type?: "group",
 ): MenuItem {
   return {
     key,
@@ -25,12 +25,12 @@ const items: MenuItem[] = [
     "Property Management",
     "sub1",
     <PushpinOutlined style={{ transform: "scaleX(-1)" }} />,
-    [getItem("Property Listing", "1"), getItem("Lease Listing", "2")]
+    [getItem("Property Listing", "1"), getItem("Lease Listing", "2")],
   ),
 ];
 
-const App: React.FC = () => {
+const MyMenu: React.FC = () => {
   return <Menu mode="inline" items={items} />;
 };
 
-export default App;
+export default MyMenu;

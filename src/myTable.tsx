@@ -223,7 +223,7 @@ const MyTable: React.FC = () => {
     form.validateFields().then((values) => {
       const { name, portfolio, purchaseDate } = values;
       const newPerson = { key: count, name, portfolio, purchaseDate };
-  
+
       let hasFilledField = false;
       for (const value of Object.values(newPerson)) {
         if (value === undefined || value === "") {
@@ -231,22 +231,22 @@ const MyTable: React.FC = () => {
           break;
         }
       }
-  
+
       if (hasFilledField) {
         // If no field is filled, display the error message
         message.error("At least 1 field needs to be filled");
         return;
       }
-  
+
       const currentDate = new Date();
       const entryDate = new Date(newPerson.purchaseDate);
       const diffYears = currentDate.getFullYear() - entryDate.getFullYear();
-  
+
       if (diffYears > 50) {
         message.error("Entry Date shouldn't be longer than 50 years");
         return;
       }
-  
+
       form.resetFields();
       setDataSource([...dataSource, newPerson]);
       setCount(count + 1);
@@ -302,7 +302,7 @@ const MyTable: React.FC = () => {
 
   const fetchData = async (pageNumber) => {
     const response = await fetch(
-      `https://your-api-url.com/data?page=${pageNumber}`
+      `https://your-api-url.com/data?page=${pageNumber}`,
     );
     const data = await response.json();
     return data;
@@ -333,10 +333,10 @@ const MyTable: React.FC = () => {
         }}
       >
         Create
-        </Button>
-        <br />
-        <br />
-       
+      </Button>
+      <br />
+      <br />
+
       <Modal
         title="Create Person"
         visible={visible}
@@ -353,20 +353,10 @@ const MyTable: React.FC = () => {
         </Menu>
         {currentMenu === "single" && (
           <Form form={form} layout="vertical">
-            <Form.Item
-              name="name"
-              label="Name"
-
-              className="single-create"
-            >
+            <Form.Item name="name" label="Name" className="single-create">
               <Input placeholder="String Only" />
             </Form.Item>
-            <Form.Item
-              name="portfolio"
-              label="Portfolio"
-              
-
-            >
+            <Form.Item name="portfolio" label="Portfolio">
               <Select placeholder="Select">
                 <Select.Option value="UOL Group Limited">
                   UOL Group Limited
@@ -386,17 +376,16 @@ const MyTable: React.FC = () => {
                 </Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item
-              name="purchaseDate"
-              label="Purchase Date"
-            
-            >
+            <Form.Item name="purchaseDate" label="Purchase Date">
               <DatePicker placeholder="Date" />
             </Form.Item>
           </Form>
         )}
         {currentMenu === "mass" && (
-          <Upload.Dragger name="file" style={{marginTop: "20px", marginBottom: "16px" }}>
+          <Upload.Dragger
+            name="file"
+            style={{ marginTop: "20px", marginBottom: "16px" }}
+          >
             <p className="ant-upload-drag-icon">
               <UploadOutlined />
             </p>
@@ -406,8 +395,7 @@ const MyTable: React.FC = () => {
           </Upload.Dragger>
         )}
       </Modal>
-      
-    
+
       <Spin spinning={isLoading} delay={5} size="large">
         <Table
           components={components}
@@ -428,7 +416,6 @@ const MyTable: React.FC = () => {
           }
         />
       </Spin>
-      
     </div>
   );
 };
