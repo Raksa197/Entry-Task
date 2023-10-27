@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import MyForm from "./MyForm";
 import MyTable from "./MyTable";
 import MyMenu from "./MyMenu";
 import { Breadcrumb, Layout, theme, Avatar, Popover } from "antd";
@@ -86,7 +85,6 @@ const Dashboard = () => {
           </Breadcrumb>
           <div>
             <p>Property Listing</p>
-            <MyForm onFormSubmit={handleFormSubmit} />
           </div>
           <div>
             <MyTable formData={formData} />

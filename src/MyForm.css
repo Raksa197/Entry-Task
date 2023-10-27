@@ -24,6 +24,12 @@
   border-radius: 0;
   float: right;
 }
+.create-button {
+  margin-right: 8px;
+  margin-bottom: 10px;
+  border-radius: 0;
+  float: left;
+}
 
 .Select.Option {
   border-radius: 0;

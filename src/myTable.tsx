@@ -12,11 +12,16 @@ import {
   Menu,
   Pagination,
   Spin,
+  Row,
+  Col,
   Alert,
   message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import "./MyTable.css"; // Import CSS file for styling
+import "./MyForm.css"; // Import CSS file for styling
+import moment from "moment";
+
+const { RangePicker } = DatePicker;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -133,13 +138,13 @@ const MyTable: React.FC = () => {
       key: "0",
       name: "Sunsetway",
       portfolio: "UOL Group Limited",
-      purchaseDate: "1995",
+      purchaseDate: moment("1995", "YYYY"),
     },
     {
       key: "1",
       name: "Claymore",
       portfolio: "CapitaLand",
-      purchaseDate: "2001",
+      purchaseDate: moment("2001", "YYYY"),
     },
     {
       key: "2",
@@ -324,98 +329,207 @@ const MyTable: React.FC = () => {
     setIsLoading(false);
   };
 
+  const [isFiltering, setIsFiltering] = useState(false); // Store the filter state
+  const [filteredData, setFilteredData] = useState(dataSource); // Store the filtered data
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const onFinish = (values) => {
+    const { name, portfolio, purchaseDate } = values;
+
+    const filtered = dataSource.filter((item) => {
+      const nameMatch =
+        !name || item.name.toLowerCase().includes(name.toLowerCase());
+      const portfolioMatch =
+        !portfolio ||
+        item.portfolio.toLowerCase().includes(portfolio.toLowerCase());
+      const purchaseDateMatch =
+        !purchaseDate ||
+        (item.purchaseDate >= startDate && item.purchaseDate <= endDate);
+
+      return nameMatch && portfolioMatch && purchaseDateMatch;
+    });
+
+    setCurrentPage(1); // Reset the current page to 1
+    setFilteredData(filtered); // Update the filtered data state
+    setIsFiltering(true); // Set isFiltering to true to display the filtered data
+  };
+
+  const handleReset = () => {
+    form.resetFields(); // Reset the form fields
+    setCurrentPage(1); // Reset the current page to 1
+    setFilteredData(dataSource); // Show the normal data before filtering
+    setIsFiltering(false); // Set isFiltering to false to display the original data
+  };
+
   return (
     <div>
-      <Button
-        type="primary"
-        onClick={() => {
-          showModal();
-        }}
-      >
-        Create
-      </Button>
-      <br />
-      <br />
-
-      <Modal
-        title="Create Person"
-        visible={visible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Menu
-          onClick={handleClick}
-          selectedKeys={[currentMenu]}
-          mode="horizontal"
+      <div>
+        <Form
+          name="website_form"
+          onFinish={onFinish}
+          onReset={handleReset}
+          className="custom-form"
         >
-          <Menu.Item key="single">Single Create</Menu.Item>
-          <Menu.Item key="mass">Mass Create</Menu.Item>
-        </Menu>
-        {currentMenu === "single" && (
-          <Form form={form} layout="vertical">
-            <Form.Item name="name" label="Name" className="single-create">
-              <Input placeholder="String Only" />
-            </Form.Item>
-            <Form.Item name="portfolio" label="Portfolio">
-              <Select placeholder="Select">
-                <Select.Option value="UOL Group Limited">
-                  UOL Group Limited
-                </Select.Option>
-                <Select.Option value="CapitaLand">CapitaLand</Select.Option>
-                <Select.Option value="City Developments Limited">
-                  City Developments Limited
-                </Select.Option>
-                <Select.Option value="Far East Organization">
-                  Far East Organization
-                </Select.Option>
-                <Select.Option value="Keppel Land Limited">
-                  Keppel Land Limited
-                </Select.Option>
-                <Select.Option value="Bukit Sembawang Estates Limited">
-                  Bukit Sembawang Estates Limited
-                </Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name="purchaseDate" label="Purchase Date">
-              <DatePicker placeholder="Date" />
-            </Form.Item>
-          </Form>
-        )}
-        {currentMenu === "mass" && (
-          <Upload.Dragger
-            name="file"
-            style={{ marginTop: "20px", marginBottom: "16px" }}
-          >
-            <p className="ant-upload-drag-icon">
-              <UploadOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drop files here to upload
-            </p>
-          </Upload.Dragger>
-        )}
-      </Modal>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                label="Name"
+                className="hide-required-mark"
+              >
+                <Input className="custom-input" placeholder="Text Only" />
+              </Form.Item>
 
-      <Spin spinning={isLoading} delay={5} size="large">
-        <Table
-          components={components}
-          rowClassName={() => "editable-row"}
-          dataSource={dataSource}
-          columns={columns as ColumnTypes}
-          loading={isLoading}
-          pagination={
-            {
-              currentPage,
-              total: dataSource.length,
-              pageSize: 5,
-              showSizeChanger: true,
-              pageSizeOptions: ["5", "10"],
-              showQuickJumper: true,
-              onChange,
-            } as PaginationProps
-          }
-        />
-      </Spin>
+              <Form.Item name="purchaseDate" label="Purchase Date">
+                <RangePicker
+                  className="custom-date-picker"
+                  onChange={(dates) => {
+                    setStartDate(dates[0]);
+                    setEndDate(dates[1]);
+                  }}
+                />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item name="portfolio" label="Portfolio">
+                <Select className="custom-select" placeholder="Select">
+                  <Select.Option value="UOL">UOL Group Limited</Select.Option>
+                  <Select.Option value="Cap">CapitaLand</Select.Option>
+                  <Select.Option value="City">
+                    City Developments Limited
+                  </Select.Option>
+                  <Select.Option value="Far">
+                    Far East Organization
+                  </Select.Option>
+                  <Select.Option value="Keppel">
+                    Keppel Land Limited
+                  </Select.Option>
+                  <Select.Option value="Bukit">
+                    Bukit Sembawang Estates Limited
+                  </Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item>
+                <Button htmlType="reset" className="custom-button">
+                  Reset
+                </Button>
+                <Button htmlType="reset" className="custom-button">
+                  Cancel
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="custom-button"
+                >
+                  Submit
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+      <div>
+        <Button
+          type="primary"
+          className="create-button"
+          onClick={() => {
+            setIsFiltering(false); // Set isFiltering to false when creating a new row
+            showModal();
+          }}
+        >
+          Create
+        </Button>
+        <br />
+        <br />
+
+        <Modal
+          title="Create Person"
+          visible={visible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Menu
+            onClick={handleClick}
+            selectedKeys={[currentMenu]}
+            mode="horizontal"
+          >
+            <Menu.Item key="single">Single Create</Menu.Item>
+            <Menu.Item key="mass">Mass Create</Menu.Item>
+          </Menu>
+          {currentMenu === "single" && (
+            <Form form={form} layout="vertical" style={{ marginLeft: 15 }}>
+              <Form.Item
+                name="name"
+                label="Name"
+                className="single-create"
+                style={{ marginTop: 10 }}
+              >
+                <Input placeholder="String Only" />
+              </Form.Item>
+              <Form.Item name="portfolio" label="Portfolio">
+                <Select placeholder="Select">
+                  <Select.Option value="UOL Group Limited">
+                    UOL Group Limited
+                  </Select.Option>
+                  <Select.Option value="CapitaLand">CapitaLand</Select.Option>
+                  <Select.Option value="City Developments Limited">
+                    City Developments Limited
+                  </Select.Option>
+                  <Select.Option value="Far East Organization">
+                    Far East Organization
+                  </Select.Option>
+                  <Select.Option value="Keppel Land Limited">
+                    Keppel Land Limited
+                  </Select.Option>
+                  <Select.Option value="Bukit Sembawang Estates Limited">
+                    Bukit Sembawang Estates Limited
+                  </Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item name="purchaseDate" label="Purchase Date">
+                <DatePicker placeholder="Date" />
+              </Form.Item>
+            </Form>
+          )}
+          {currentMenu === "mass" && (
+            <Upload.Dragger
+              name="file"
+              style={{ marginTop: "20px", marginBottom: "16px" }}
+            >
+              <p className="ant-upload-drag-icon">
+                <UploadOutlined />
+              </p>
+              <p className="ant-upload-text">
+                Click or drop files here to upload
+              </p>
+            </Upload.Dragger>
+          )}
+        </Modal>
+
+        <Spin spinning={isLoading} delay={5} size="large">
+          <Table
+            components={components}
+            rowClassName={() => "editable-row"}
+            dataSource={isFiltering ? filteredData : dataSource} // Use filteredData only when isFiltering is true
+            columns={columns as ColumnTypes}
+            loading={isLoading}
+            pagination={
+              {
+                currentPage,
+                total: filteredData.length,
+                pageSize: 4,
+                showSizeChanger: true,
+                pageSizeOptions: ["4", "8"],
+                showQuickJumper: true,
+                onChange,
+              } as PaginationProps
+            }
+          />
+        </Spin>
+      </div>
     </div>
   );
 };

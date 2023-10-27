@@ -26,34 +26,17 @@ const MyForm = () => {
     <Form name="website_form" onFinish={onFinish} className="custom-form">
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please input your Name!" }]}
-            className="hide-required-mark"
-          >
+          <Form.Item name="name" label="Name" className="hide-required-mark">
             <Input className="custom-input" placeholder="Text Only" />
           </Form.Item>
 
-          <Form.Item
-            name="purchaseDate"
-            label="Purchase Date"
-            rules={[
-              { required: true, message: "Please select the Purchase Date!" },
-            ]}
-          >
+          <Form.Item name="purchaseDate" label="Purchase Date">
             <RangePicker className="custom-date-picker" />
           </Form.Item>
         </Col>
 
         <Col span={12}>
-          <Form.Item
-            name="portfolio"
-            label="Portfolio"
-            rules={[
-              { required: true, message: "Please select your Portfolio!" },
-            ]}
-          >
+          <Form.Item name="portfolio" label="Portfolio">
             <Select className="custom-select" placeholder="Select">
               <Select.Option value="UOL">UOL Group Limited</Select.Option>
               <Select.Option value="Cap">CapitaLand</Select.Option>
