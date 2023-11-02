@@ -329,30 +329,43 @@ const MyTable: React.FC = () => {
     setIsLoading(false);
   };
 
-  const [isFiltering, setIsFiltering] = useState(false); // Store the filter state
-  const [filteredData, setFilteredData] = useState(dataSource); // Store the filtered data
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [filteredData, setFilteredData] = useState([]); // Filtered data
+  const [filters, setFilters] = useState({
+    name: "",
+    portfolio: "",
+    purchaseDate: null,
+  }); // Filters
+  const [isFiltering, setIsFiltering] = useState(false); // Filtering state
 
-  const onFinish = (values) => {
-    const { name, portfolio, purchaseDate } = values;
+  // Fetch your data here and update dataSource
+  // ...
 
-    const filtered = dataSource.filter((item) => {
-      const nameMatch =
-        !name || item.name.toLowerCase().includes(name.toLowerCase());
-      const portfolioMatch =
-        !portfolio ||
-        item.portfolio.toLowerCase().includes(portfolio.toLowerCase());
-      const purchaseDateMatch =
-        !purchaseDate ||
-        (item.purchaseDate >= startDate && item.purchaseDate <= endDate);
+  useEffect(() => {
+    const { name, portfolio, purchaseDate } = filters;
 
-      return nameMatch && portfolioMatch && purchaseDateMatch;
-    });
+    const filtered = dataSource
+      .filter(
+        (item) => !name || item.name.toLowerCase().includes(name.toLowerCase()),
+      )
+      .filter(
+        (item) =>
+          !portfolio ||
+          item.portfolio.toLowerCase().includes(portfolio.toLowerCase()),
+      )
+      .filter(
+        (item) =>
+          !purchaseDate ||
+          (item.purchaseDate >= purchaseDate.startDate &&
+            item.purchaseDate <= purchaseDate.endDate),
+      );
 
     setCurrentPage(1); // Reset the current page to 1
     setFilteredData(filtered); // Update the filtered data state
     setIsFiltering(true); // Set isFiltering to true to display the filtered data
+  }, [filters, dataSource]);
+
+  const onFinish = (values) => {
+    setFilters(values);
   };
 
   const handleReset = () => {
@@ -361,7 +374,6 @@ const MyTable: React.FC = () => {
     setFilteredData(dataSource); // Show the normal data before filtering
     setIsFiltering(false); // Set isFiltering to false to display the original data
   };
-
   return (
     <div>
       <div>
