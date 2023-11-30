@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import MyTable from "./MyTable";
-import MyMenu from "./MyMenu";
+import MyTable from "./myTable";
+import MyMenu from "../src/myMenu";
 import { Breadcrumb, Layout, theme, Avatar, Popover } from "antd";
 import { MenuOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import "./App.css";
@@ -10,12 +9,6 @@ const Dashboard = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
-  const [formData, setFormData] = useState(null);
-
-  const handleFormSubmit = (values) => {
-    setFormData(values);
-  };
 
   const content = (
     <div style={{ width: 200 }}>
@@ -87,7 +80,7 @@ const Dashboard = () => {
             <p>Property Listing</p>
           </div>
           <div>
-            <MyTable formData={formData} />
+            <MyTable formData={FormData} />
           </div>
         </Content>
       </Layout>

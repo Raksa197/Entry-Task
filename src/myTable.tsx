@@ -10,26 +10,24 @@ import {
   DatePicker,
   Upload,
   Menu,
-  Pagination,
   Spin,
   Row,
   Col,
-  Alert,
   message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import "./MyForm.css"; // Import CSS file for styling
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 const { RangePicker } = DatePicker;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface Item {
-  key: string;
+  key: React.Key;
   name: string;
   portfolio: string;
-  purchaseDate: string;
+  purchaseDate: Moment;
 }
 
 interface EditableRowProps {
@@ -127,7 +125,7 @@ interface DataType {
   key: React.Key;
   name: string;
   portfolio: string;
-  purchaseDate: string;
+  purchaseDate: Moment;
 }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
@@ -148,27 +146,27 @@ const MyTable: React.FC = () => {
     },
     {
       key: "2",
-      name: "Claymore",
-      portfolio: "CapitaLand",
-      purchaseDate: "2001",
+      name: "Raksa",
+      portfolio: "Keppel Land Limited",
+      purchaseDate: moment("2002", "YYYY"),
     },
     {
       key: "3",
-      name: "Claymore",
-      portfolio: "CapitaLand",
-      purchaseDate: "2001",
+      name: "Ty",
+      portfolio: "Far East Organization",
+      purchaseDate: moment("2003", "YYYY"),
     },
     {
       key: "4",
-      name: "Claymore",
-      portfolio: "CapitaLand",
-      purchaseDate: "2001",
+      name: "Bouravuth",
+      portfolio: "City Development Limited",
+      purchaseDate: moment("2010", "YYYY"),
     },
     {
       key: "5",
       name: "Claymore",
       portfolio: "CapitaLand",
-      purchaseDate: "2001",
+      purchaseDate: moment("2001", "YYYY"),
     },
   ]);
 
@@ -264,7 +262,7 @@ const MyTable: React.FC = () => {
     setVisible(false);
   };
 
-  const handleClick = (e) => {
+  const handleClick = (e: React.MouseEvent | any) => {
     setCurrentMenu(e.key);
   };
 
@@ -305,7 +303,7 @@ const MyTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async (pageNumber) => {
+  const fetchData = async (pageNumber: number) => {
     const response = await fetch(
       `https://your-api-url.com/data?page=${pageNumber}`,
     );
@@ -329,43 +327,30 @@ const MyTable: React.FC = () => {
     setIsLoading(false);
   };
 
-  const [filteredData, setFilteredData] = useState([]); // Filtered data
-  const [filters, setFilters] = useState({
-    name: "",
-    portfolio: "",
-    purchaseDate: null,
-  }); // Filters
-  const [isFiltering, setIsFiltering] = useState(false); // Filtering state
+  const [isFiltering, setIsFiltering] = useState(false); // Store the filter state
+  const [filteredData, setFilteredData] = useState(dataSource); // Store the filtered data
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
-  // Fetch your data here and update dataSource
-  // ...
+  const onFinish = (values: any) => {
+    const { name, portfolio, purchaseDate } = values;
 
-  useEffect(() => {
-    const { name, portfolio, purchaseDate } = filters;
+    const filtered = dataSource.filter((item) => {
+      const nameMatch =
+        !name || item.name.toLowerCase().includes(name.toLowerCase());
+      const portfolioMatch =
+        !portfolio ||
+        item.portfolio.toLowerCase().includes(portfolio.toLowerCase());
+      const purchaseDateMatch =
+        !purchaseDate ||
+        (item.purchaseDate >= startDate && item.purchaseDate <= endDate);
 
-    const filtered = dataSource
-      .filter(
-        (item) => !name || item.name.toLowerCase().includes(name.toLowerCase()),
-      )
-      .filter(
-        (item) =>
-          !portfolio ||
-          item.portfolio.toLowerCase().includes(portfolio.toLowerCase()),
-      )
-      .filter(
-        (item) =>
-          !purchaseDate ||
-          (item.purchaseDate >= purchaseDate.startDate &&
-            item.purchaseDate <= purchaseDate.endDate),
-      );
+      return nameMatch && portfolioMatch && purchaseDateMatch;
+    });
 
     setCurrentPage(1); // Reset the current page to 1
     setFilteredData(filtered); // Update the filtered data state
     setIsFiltering(true); // Set isFiltering to true to display the filtered data
-  }, [filters, dataSource]);
-
-  const onFinish = (values) => {
-    setFilters(values);
   };
 
   const handleReset = () => {
@@ -374,6 +359,7 @@ const MyTable: React.FC = () => {
     setFilteredData(dataSource); // Show the normal data before filtering
     setIsFiltering(false); // Set isFiltering to false to display the original data
   };
+
   return (
     <div>
       <div>
