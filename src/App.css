@@ -1,0 +1,17 @@
+.menu-icon {
+  padding: 20px;
+  stroke-width: 80;
+  stroke: white;
+  font-weight: bold;
+  margin-left: -40px;
+}
+
+p {
+  margin-left: 20px;
+  font-size: 20px;
+}
+
+.breadCrumb {
+  margin-left: 20px;
+  padding-bottom: 10px;
+}
